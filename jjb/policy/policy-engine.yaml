@@ -2,17 +2,24 @@
 - project:
     name: policy-engine
     project-name: 'policy-engine'
+    arch_tag:
+        - 'amd64':
+           build-node: 'ubuntu1604-docker-8c-8g'
+        - 'arm64':
+           build-node: 'ubuntu1604-docker-arm64-4c-2g'
     jobs:
       - '{project-name}-{stream}-verify-java'
       - '{project-name}-{stream}-merge-java':
          docker-pom: 'pom.xml'
          mvn-profile: 'docker'
          mvn-params: "-P docker"
-      - '{project-name}-{stream}-docker-version-java-daily':
-         docker-pom: 'pom.xml'
-         mvn-profile: 'docker'
-         mvn-params: '-P docker'
-         disabled: true
+      - 'arch-docker-version-java-daily':
+          docker-pom: 'pom.xml'
+          mvn-profile: 'docker'
+          mvn-params: '-P docker -Ddocker.pull.registry=docker.io -Ddocker.push.registry=onapmulti'
+      - '{project-name}-docker-{stream}-manifest':
+          build-node: ubuntu1604-docker-8c-8g
+      - '{project-name}-docker-{stream}'
     project: 'policy/engine'
     stream:
       - 'master':
