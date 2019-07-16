@@ -776,6 +776,24 @@
     #
     # The purpose of this job template is to run:
     #  1. login to the docker registry
+    #  2. inject a version.properties file and set versions
+    #  3. run a docker push
+    #
+    # Required Variables:
+    #     pom:       name/location of the pom.xml file relative to the workspace
+    #     profile:   the docker profile defined in the pom
+    #     maven-properties: properties passed to maven
+
+    <<: *docker_java_defaults
+    name: '{project-name}-{arch_tag}-{stream}-docker-java-daily'
+    id: 'arch-docker-java-daily'
+    node: '{build-node}'
+
+- job-template:
+    # Job template for building & pushing docker images
+    #
+    # The purpose of this job template is to run:
+    #  1. login to the docker registry
     #  2. maven clean deploy on the specified profile
     #
     # This job uses a conditional regex match step to set versions.
