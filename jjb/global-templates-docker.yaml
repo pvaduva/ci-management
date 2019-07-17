@@ -890,3 +890,42 @@
           projects:
             - name: '{project-name}-docker-{stream}-manifest'
 
+- job-template:
+    name: '{project-name}-docker-{stream}-properties'
+    node: '{build-node}'
+    project-type: multijob
+    disabled: '{obj:disabled}'
+    build-timeout: 15
+
+    parameters:
+      - manifest-job-parameters:
+          project: '{project}'
+          branch: '{branch}'
+          stream: '{stream}'
+
+    disabled: '{obj:disabled}'
+
+    properties:
+      - throttle:
+          max-per-node: 1
+          option: 'project'
+      - build-blocker:
+          use-build-blocker: true
+          blocking-jobs:
+            - '{project-name}-.*-docker-.*'
+          blocking-level: 'NODE'
+
+    builders:
+      - multijob:
+          name: 'build docker images'
+          execution-type: PARALLEL
+          projects:
+            - name: '{project-name}-amd64-{stream}-merge-properties-java'
+            - name: '{project-name}-arm64-{stream}-merge-properties-java'
+      - multijob:
+          name: 'publish docker manifest'
+          condition: SUCCESSFUL
+          execution-type: PARALLEL
+          projects:
+            - name: '{project-name}-docker-{stream}-manifest'
+

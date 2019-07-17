@@ -8,6 +8,11 @@
 - project:
     name: clamp
     project-name: 'clamp'
+    arch_tag:
+        - 'amd64':
+           build-node: 'ubuntu1604-docker-8c-8g'
+        - 'arm64':
+           build-node: 'ubuntu1604-docker-arm64-4c-2g'
     jobs:
       - gerrit-maven-stage:
           build-node: ubuntu1604-docker-8c-8g
@@ -20,10 +25,12 @@
           mvn-params: '-Dmaven.test.skip=true -P docker'
       - '{project-name}-{stream}-verify-java-checkstyle':
          mvn-params: '-Ddocker.pull.registry=nexus3.onap.org:10001'
-      - '{project-name}-{stream}-merge-properties-java':
+      - 'arch-properties-java':
          mvn_properties:
-            - docker.pull.registry=nexus3.onap.org:10001
-            - docker.push.registry=nexus3.onap.org:10003
+            - docker.pull.registry=docker.io
+            - docker.push.registry=onapmulti
+      - '{project-name}-docker-{stream}-manifest'
+      - '{project-name}-docker-{stream}-properties'
 
     project: 'clamp'
     stream:

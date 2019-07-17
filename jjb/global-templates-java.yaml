@@ -634,7 +634,9 @@
     #     maven-properties: properties passed to maven
 
     <<: *merge_java_defaults
-    name: '{project-name}-{stream}-merge-properties-java'
+    name: '{project-name}-{arch_tag}-{stream}-merge-properties-java'
+    id: 'arch-properties-java'
+    node: '{build-node}'
 
 - job-template:
     # Job template for Java merge jobs that takes a maven template
